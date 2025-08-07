@@ -964,6 +964,15 @@ END;
 $$;
 
 -- Create stored procedure to send emails to verified recipients in Snowflake
+use role accountadmin;
+
+CREATE OR REPLACE NOTIFICATION INTEGRATION ai_email_int
+  TYPE=EMAIL
+  ENABLED=TRUE;
+
+GRANT USAGE ON INTEGRATION ai_email_int TO ROLE SF_Intelligence_Demo;
+
+use role SF_Intelligence_Demo;
 
 CREATE OR REPLACE PROCEDURE send_mail(recipient TEXT, subject TEXT, text TEXT)
 RETURNS TEXT
