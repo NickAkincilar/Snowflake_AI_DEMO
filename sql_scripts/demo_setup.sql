@@ -964,16 +964,6 @@ END;
 $$;
 
 -- Create stored procedure to send emails to verified recipients in Snowflake
-use role accountadmin;
-
-CREATE OR REPLACE NOTIFICATION INTEGRATION ai_email_int
-  TYPE=EMAIL
-  ENABLED=TRUE;
-
-GRANT USAGE ON INTEGRATION ai_email_int TO ROLE SF_Intelligence_Demo;
-
-use role SF_Intelligence_Demo;
-
 CREATE OR REPLACE PROCEDURE send_mail(recipient TEXT, subject TEXT, text TEXT)
 RETURNS TEXT
 LANGUAGE PYTHON
@@ -994,6 +984,18 @@ def send_mail(session, recipient, subject, text):
     return f'Email was sent to {recipient} with subject: "{subject}".'
 $$;
 
+-- Create notification integration to allow emails to be sent from Snowflake
+use role accountadmin;
+
+CREATE OR REPLACE NOTIFICATION INTEGRATION ai_email_int
+  TYPE=EMAIL
+  ENABLED=TRUE;
+
+GRANT USAGE ON INTEGRATION ai_email_int TO ROLE SF_Intelligence_Demo;
+
+use role SF_Intelligence_Demo;
+
+-- Create function to scrape web pages
 CREATE OR REPLACE FUNCTION Web_scrape(weburl STRING)
 RETURNS STRING
 LANGUAGE PYTHON
